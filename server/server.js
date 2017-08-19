@@ -60,7 +60,7 @@ app.delete('/todos/:id',(req,res)=>{
         if(!todo){
             return res.status(404).send("404")
         }
-        res.status(200)
+        res.send({todo})
 
     }).catch((e)=>{
         res.status(400).send()
