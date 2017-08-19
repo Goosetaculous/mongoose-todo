@@ -10,6 +10,8 @@ const {Todo} =  require('./models/todo')
 const {User} =  require('./models/User')
 const {ObjectId} = require('mongodb')
 
+var {authenticate} = require('./middleware/authenticate')
+
 var app =  express()
 const port =  process.env.PORT || 3000
 
@@ -104,9 +106,6 @@ app.patch('/todos/:id',(req,res)=>{
 app.post('/users',(req,res)=>{
     var body = _.pick(req.body,['email','password'])
     var user =  new User(body)
-
-
-
     // Users -  model method
     // user.generateAuthToken - instance method
 
@@ -119,6 +118,14 @@ app.post('/users',(req,res)=>{
         console.log(e)
         res.status(400).send(e)
     })
+})
+
+
+
+
+
+app.get('/users/me',authenticate,(req,res)=>{
+   res.send(req.user)
 })
 
 
