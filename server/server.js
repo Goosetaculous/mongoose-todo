@@ -1,15 +1,4 @@
-var  env = process.env.NODE_ENV || 'development'
-
-if(env ==='development'){
-    process.env.PORT=3000
-    process.env.MONGODB_URI = 'mongodb://josephtrop:P)o9I*u7@ds129402.mlab.com:29402/goose'
-
-}else if(env === 'test'){
-    process.env.PORT=3000
-    process.env.MONGODB_URI = 'mongodb://josephtrop:P)o9I*u7@ds129402.mlab.com:29402/gooseTEST'
-
-}
-
+require('./config/config')
 const _ = require('lodash')
 
 const express =  require('express')
@@ -111,6 +100,26 @@ app.patch('/todos/:id',(req,res)=>{
 
 })
 
+// POST /users
+app.post('/users',(req,res)=>{
+    var body = _.pick(req.body,['email','password'])
+    var user =  new User(body)
+
+
+
+    // Users -  model method
+    // user.generateAuthToken - instance method
+
+    user.save().then(()=>{
+        //res.send(user)
+        return user.generateAuthToken()
+    }).then((token)=>{
+        res.header('x-auth',token).send(user) //x-  custom header
+    }).catch((e)=>{
+        console.log(e)
+        res.status(400).send(e)
+    })
+})
 
 
 
